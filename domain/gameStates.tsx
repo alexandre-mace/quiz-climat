@@ -1,0 +1,11 @@
+const GAME_STATE_HOME = "home";
+const GAME_STATE_CATEGORY = "category";
+const GAME_STATE_QUESTIONS = "questions";
+const GAME_STATE_RESULTS = "results";
+
+export {
+  GAME_STATE_HOME,
+  GAME_STATE_CATEGORY,
+  GAME_STATE_QUESTIONS,
+  GAME_STATE_RESULTS,
+};
