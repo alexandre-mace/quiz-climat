@@ -1,81 +1,30 @@
-"use client";
-
-import { useState } from "react";
-import {
-  GAME_STATE_CATEGORY,
-  GAME_STATE_HOME,
-  GAME_STATE_QUESTIONS,
-  GAME_STATE_RESULTS,
-} from "@/domain/gameStates";
-import Home from "@/components/Home";
-import SelectCategory from "@/components/SelectCategory";
+import Game from "@/components/Game";
+import { fetchCategories, fetchQuestions } from "@/lib/data";
 import Category from "@/domain/Category";
-import Questions from "@/components/Questions";
-import { questions } from "@/domain/data";
-import Results from "@/components/Results";
+import { Question } from "@/domain/Question";
 
-export default function App() {
-  const [score, setScore] = useState(0);
-  const [gameState, setGameState] = useState(GAME_STATE_HOME);
-  const [selectedCategory, setSelectedCategory] = useState<null | Category>(
-    null,
-  );
-  const selectGameCategory = () => {
-    setSelectedCategory(null);
-    setGameState(GAME_STATE_CATEGORY);
-  };
+export default async function App() {
+  const categoriesData = await fetchCategories();
+  const questionsData = await fetchQuestions();
 
-  const startQuestions = (category: Category) => {
-    setSelectedCategory(category);
-    setGameState(GAME_STATE_QUESTIONS);
-  };
+  const categories: Category[] = categoriesData.results.map((result) => ({
+    title: result.properties["Nom"].title[0].plain_text,
+    emoji: result.properties["Emoji"].url,
+  }));
 
-  const endQuestions = (score: number) => {
-    setScore(score);
-    setGameState(GAME_STATE_RESULTS);
-  };
+  const questions: Question[] = questionsData.results.map((result) => ({
+    title: result.properties["Question"].title[0].text.content,
+    category: categories[result.properties["Catégorie"].select.name - 1],
+    explanation: {
+      content: result.properties["Contenu explication"].rich_text[0].plain_text,
+      knowMore: result.properties["Lien explication"].url,
+    },
+    answers: [1, 2, 3, 4].map((index) => ({
+      title: result.properties[`Réponse ${index}`].rich_text[0].plain_text,
+      isRight:
+        parseInt(result.properties["Bonne réponse"].select.name) === index,
+    })),
+  }));
 
-  const back = () => {
-    switch (gameState) {
-      case GAME_STATE_HOME:
-      case GAME_STATE_CATEGORY:
-        return setGameState(GAME_STATE_HOME);
-      case GAME_STATE_QUESTIONS:
-        return setGameState(GAME_STATE_CATEGORY);
-    }
-  };
-
-  return (
-    <div className={"min-h-screen bg-[#120C41] text-white"}>
-      {gameState === GAME_STATE_HOME && (
-        <Home selectGameCategory={selectGameCategory} />
-      )}
-
-      {gameState === GAME_STATE_CATEGORY && (
-        <SelectCategory startQuestions={startQuestions} back={back} />
-      )}
-
-      {gameState === GAME_STATE_QUESTIONS && selectedCategory && (
-        <Questions
-          questions={questions.filter(
-            (question) =>
-              JSON.stringify(question.tag) ===
-              JSON.stringify(selectedCategory.tag),
-          )}
-          endQuestions={endQuestions}
-          back={back}
-        />
-      )}
-      {gameState === GAME_STATE_RESULTS && (
-        <Results
-          score={score}
-          questions={questions.filter(
-            (question) =>
-              JSON.stringify(question.tag) ===
-              JSON.stringify(selectedCategory?.tag),
-          )}
-        />
-      )}
-    </div>
-  );
+  return <Game questions={questions} categories={categories} />;
 }

@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 
 const Home = ({ selectGameCategory }: { selectGameCategory: () => void }) => {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-between bg-[url('/decor-1.svg')]  bg-cover bg-bottom bg-no-repeat p-4 bg-blend-luminosity">
+    <div className="flex min-h-screen flex-col items-center justify-between bg-opacity-10 bg-[url('/decor-1.svg')] bg-cover bg-bottom bg-no-repeat p-4 bg-blend-luminosity">
       <main className={""}>
         <div className={"py-20"}>
           <Image

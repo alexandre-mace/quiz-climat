@@ -1,12 +1,12 @@
-import Tag from "@/domain/Tag";
 import { Answer } from "@/domain/Answer";
 import { Explanation } from "@/domain/Explanation";
+import Category from "@/domain/Category";
 
 type Question = {
   title: string;
   answers: Answer[];
   explanation: Explanation;
-  tag: Tag;
+  category: Category;
 };
 
 export type { Question };

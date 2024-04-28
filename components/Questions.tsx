@@ -11,7 +11,6 @@ import {
 import { Button } from "@/components/ui/button";
 import QuestionStarting from "@/components/QuestionStarting";
 import QuestionExplanation from "@/components/QuestionExplanation";
-import CategoryType from "@/domain/Category";
 import { Answer } from "@/domain/Answer";
 import Back from "@/components/Back";
 

@@ -6,17 +6,20 @@ import { Button } from "@/components/ui/button";
 import CategoryType from "@/domain/Category";
 import TagType from "@/domain/Tag";
 import { useState } from "react";
-import { categories, tags } from "@/domain/data";
 import Back from "@/components/Back";
 
 const SelectCategory = ({
   startQuestions,
   back,
+  categories,
 }: {
   startQuestions: (category: CategoryType) => void;
   back: () => void;
+  categories: CategoryType[];
 }) => {
-  const [selectedTag, setSelectedTag] = useState<null | TagType>(null);
+  const [selectedCategory, setSelectedCategory] = useState<null | TagType>(
+    null,
+  );
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-between bg-[url('/decor-1.svg')] bg-cover bg-bottom bg-no-repeat p-4  px-4 pb-4 pt-8 bg-blend-luminosity md:pt-16">
@@ -33,19 +36,21 @@ const SelectCategory = ({
           <Button className={"bg-[#5B21FF] text-white"}>Quiz aléatoire</Button>
         </div>
         <div className={"flex flex-wrap justify-center gap-4"}>
-          {tags.map((tag) => (
+          {categories.map((category) => (
             <div
-              key={tag.title}
+              key={category.title}
               onClick={() =>
-                JSON.stringify(tag) === JSON.stringify(selectedTag)
-                  ? setSelectedTag(null)
-                  : setSelectedTag(tag)
+                JSON.stringify(category) === JSON.stringify(selectedCategory)
+                  ? setSelectedCategory(null)
+                  : setSelectedCategory(category)
               }
             >
-              <Tag
-                tag={tag}
+              <CategoryTag
+                category={category}
                 clickable={true}
-                selected={JSON.stringify(tag) === JSON.stringify(selectedTag)}
+                selected={
+                  JSON.stringify(category) === JSON.stringify(selectedCategory)
+                }
               />
             </div>
           ))}
@@ -53,10 +58,10 @@ const SelectCategory = ({
         <div className={"grid gap-6 md:grid-cols-5"}>
           {categories
             .filter((category) => {
-              if (!selectedTag) return true;
+              if (!selectedCategory) return true;
 
               return (
-                JSON.stringify(category.tag) === JSON.stringify(selectedTag)
+                JSON.stringify(category) === JSON.stringify(selectedCategory)
               );
             })
             .map((category) => (
@@ -83,24 +88,24 @@ const Category = ({ category }: { category: CategoryType }) => (
   >
     <Image src={category.emoji} height={68} width={68} alt={category.title} />
     <div className={"mb-2 text-xl font-bold"}>{category.title}</div>
-    <Tag tag={category.tag} clickable={false} selected={false} />
+    <CategoryTag category={category} clickable={false} selected={false} />
   </div>
 );
 
-const Tag = ({
-  tag,
+const CategoryTag = ({
+  category,
   clickable = false,
   selected = false,
 }: {
-  tag: TagType;
+  category: CategoryType;
   clickable: boolean;
   selected: boolean;
 }) => (
   <div
     className={`flex items-center gap-1 rounded-md ${selected ? "bg-[#5B21FF]" : "bg-[#423A65]"} px-2 py-1 text-sm ${clickable || selected ? "cursor-pointer hover:bg-[#5B21FF]" : ""}`}
   >
-    <Image src={tag.emoji} height={16} width={16} alt={tag.title} />
-    <div>{tag.title}</div>
+    <Image src={category.emoji} height={16} width={16} alt={category.title} />
+    <div>{category.title}</div>
   </div>
 );
 
