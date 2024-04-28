@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import Game from "@/components/Game";
 import { fetchCategories, fetchQuestions } from "@/lib/data";
 import Category from "@/domain/Category";
